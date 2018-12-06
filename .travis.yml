@@ -1,13 +1,30 @@
 language: c
 
-compiler:
-  - clang
-  - gcc
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-6
+      - gcc-6
+  homebrew:
+    taps:
+      - facebook/fb
+    packages: 
+      - buck
+
+jdk:
+  - openjdk8
+
+os:
+  - linux
+  - osx
+
+osx_image: xcode9.3
+
+before_install:
+- ./travis/before-install-$TRAVIS_OS_NAME.sh
 
 script:
-  - "make"
-
-notifications:
-  email: false
-  irc:
-    - "irc.freenode.net#node-ci"
+  - "buck build -c ui.superconsole=DISABLED //:http-parser"
+  - "buck run -c ui.superconsole=DISABLED //:test"
