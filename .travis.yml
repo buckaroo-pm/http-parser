@@ -1,4 +1,6 @@
-language: c
+language: cpp
+sudo: true
+dist: trusty
 
 addons:
   apt:
@@ -10,21 +12,22 @@ addons:
   homebrew:
     taps:
       - facebook/fb
-    packages: 
+    packages:
       - buck
-
-jdk:
-  - openjdk8
 
 os:
   - linux
   - osx
 
+env:
+  - BUCKAROO_VERSION=buckaroo-redux-alpha-8
+
 osx_image: xcode9.3
 
 before_install:
-- ./travis/before-install-$TRAVIS_OS_NAME.sh
+  - ./travis/before-install-$TRAVIS_OS_NAME.sh
 
 script:
+  - ./buckaroo-client install
   - "buck build -c ui.superconsole=DISABLED //:http-parser"
   - "buck run -c ui.superconsole=DISABLED //:test"
